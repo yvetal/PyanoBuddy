@@ -1,7 +1,27 @@
 import mido, random
 
 from time import sleep, time
-WHITE_NOTES = [60, 62, 64, 65, 67, 69, 71, 72]
+
+scales = {
+    'MAJOR': [0,2,4,5,7,9,11,12],
+    'MINOR': [0,2,3,5,7,8,10,12]
+} 
+
+keys = {
+    'C': 60,
+    'C#': 61,
+    'D': 62,
+    'D#': 63,
+    'E': 64,
+    'F': 65,
+    'F#': 66,
+    'G': 67,
+    'G#': 68,
+    'A': 69,
+    'A#': 70,
+    'B': 71
+}
+    
 
 class Looper():
     def __init__(self):
@@ -46,7 +66,8 @@ class Looper():
     
     def run_loop(self):
         while True:
-            self._notes = random.sample(WHITE_NOTES, self._note_count)
+            
+            self._notes = random.sample([keys['A']+i for i in scales['MINOR']], self._note_count)
 
             matched = False
             while not matched:
