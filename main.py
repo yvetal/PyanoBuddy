@@ -2,10 +2,7 @@ import mido, random
 
 from time import sleep, time
 
-scales = {
-    'MAJOR': [0,2,4,5,7,9,11,12],
-    'MINOR': [0,2,3,5,7,8,10,12]
-} 
+from scales import scales
 
 keys = {
     'C': 60,
@@ -67,7 +64,7 @@ class Looper():
     def run_loop(self):
         while True:
             
-            self._notes = random.sample([keys['A']+i for i in scales['MINOR']], self._note_count)
+            self._notes = random.sample([keys['A']+i for i in scales['NATURAL_MINOR']], self._note_count)
 
             matched = False
             while not matched:
