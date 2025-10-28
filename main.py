@@ -8,13 +8,13 @@ class Looper():
         self._out_port = mido.open_output(mido.get_output_names()[0])
         self._in_port = mido.open_input(mido.get_input_names()[0])
         self._notes = [60]
-        self._note_count = 3
-        self._timer = 3
+        self._note_count = 2
+        self._timer = 5
     
     def _play_note(self):
         for note in self._notes:
             self._out_port.send(mido.Message('note_on', note=note, velocity=100))
-        sleep(1)
+        sleep(0.1)
         
         for note in self._notes:
             self._out_port.send(mido.Message('note_off', note=note))
@@ -24,7 +24,7 @@ class Looper():
         
         matched = set()
 
-        while time() - start_time < self._timer:  # wait up to 5 seconds
+        while time() - start_time < self._timer:  
             for msg in self._in_port.iter_pending():
                 if msg.type == 'note_on' and msg.velocity > 0:
                     if msg.note in self._notes:
@@ -38,15 +38,12 @@ class Looper():
             if len(matched) == self._note_count:
                 return True
             
-            sleep(0.05)
-
-            if len(matched) < self._note_count:
-                sleep(1)
         return False
         if len(matched) == self._note_count:
             return True
         else:
             return False
+    
     def run_loop(self):
         while True:
             self._notes = random.sample(WHITE_NOTES, self._note_count)
