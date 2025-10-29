@@ -31,9 +31,7 @@ class Looper():
     def _play_note(self):
         for note in self._notes:
             self._out_port.send(mido.Message('note_on', note=note, velocity=100))
-        sleep(0.1)
-        
-        for note in self._notes:
+            sleep(0.2)
             self._out_port.send(mido.Message('note_off', note=note))
 
     def _listen_for_note(self):
@@ -63,7 +61,8 @@ class Looper():
     
     def run_loop(self):
         while True:
-            
+            self._note_count = random.choice(range(1,6))
+
             self._notes = random.sample([keys['A']+i for i in scales['NATURAL_MINOR']], self._note_count)
 
             matched = False
