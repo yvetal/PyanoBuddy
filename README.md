@@ -1,5 +1,6 @@
 # PyanoBuddy
 Connect your synth to Midi. First midi input is used.
+Need latest python
 ```
 pip install -r requirements.txt
 python main.py
