@@ -25,8 +25,9 @@ class Looper():
         self._out_port = mido.open_output(mido.get_output_names()[0])
         self._in_port = mido.open_input(mido.get_input_names()[0])
         self._notes = [60]
-        self._note_count = 2
+        self._note_count = 12
         self._timer = 5
+        self._max_note_count = 2
     
     def _play_note(self):
         for note in self._notes:
@@ -50,20 +51,16 @@ class Looper():
                         print("❌ Wrong note, listen again!\n")
                         matched.clear()  # reset if any wrong
 
-            if len(matched) == self._note_count:
+            if len(matched) == len(set(self._notes)):
                 return True
             
         return False
-        if len(matched) == self._note_count:
-            return True
-        else:
-            return False
     
     def run_loop(self):
         while True:
-            self._note_count = random.choice(range(1,6))
+            self._note_count = random.choice(range(1,self._max_note_count))
 
-            self._notes = random.sample([keys['A']+i for i in scales['NATURAL_MINOR']], self._note_count)
+            self._notes = random.choices([keys['A']+i for i in scales['HARMONIC_MINOR']], k=self._note_count)
 
             matched = False
             while not matched:
