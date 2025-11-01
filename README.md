@@ -11,3 +11,6 @@ Increase difficulty by increasing self._note_count variable.
 Order of notes is currently not checked.
 
 Scale change is code change. Best of luck with that.
+Use the below variables:
+    root = keys['C']
+    scale = scales['MAJOR_CHORD']
