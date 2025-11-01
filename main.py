@@ -25,8 +25,11 @@ class Looper():
         self._out_port = mido.open_output(mido.get_output_names()[0])
         self._in_port = mido.open_input(mido.get_input_names()[0])
         self._notes = [60]
-        self._note_count = 2
+        self._note_count = 4
         self._timer = 5
+        self._max_note_count = 1
+        self._context = True
+        
     
     def _play_note(self):
         for note in self._notes:
@@ -37,41 +40,46 @@ class Looper():
     def _listen_for_note(self):
         start_time = time()
         
-        matched = set()
-
+        matched = []
         while time() - start_time < self._timer:  
             for msg in self._in_port.iter_pending():
                 if msg.type == 'note_on' and msg.velocity > 0:
-                    if msg.note in self._notes:
-                        if msg.note not in matched:
-                            matched.add(msg.note)
-                            print(f"✅ Correct ({len(matched)}/{self._note_count})")
-                    else:
-                        print("❌ Wrong note, listen again!\n")
-                        matched.clear()  # reset if any wrong
-
-            if len(matched) == self._note_count:
+                    matched.append(msg.note)
+                    if len(matched) == self._note_count:
+                        break
+            if matched == self._notes:
                 return True
-            
+        print('Time up')
         return False
-        if len(matched) == self._note_count:
-            return True
-        else:
-            return False
     
     def run_loop(self):
+        self._streak = 0
         while True:
-            self._note_count = random.choice(range(1,6))
+            if(self._streak > 20):
+                self._streak = 0
+                self._max_note_count +=1
+                print(f'Streak reached! Max count is now {self._max_note_count}')
 
-            self._notes = random.sample([keys['A']+i for i in scales['NATURAL_MINOR']], self._note_count)
-
-            matched = False
-            while not matched:
+            root = keys['C']
+            scale = scales['MAJOR_CHORD']
+            self._note_count = random.choice(range(1,self._max_note_count+1))
+            self._notes = random.choices([root+i for i in scale], k=self._note_count)
+            if self._context:
+                self._note_count +=1
+                self._notes = [root]+self._notes
+            match = False
+            while not match:
                 self._play_note()
-                matched = self._listen_for_note()
-                # wait for input
+                match = self._listen_for_note()
+                if match:
+                    print(f"✅ Correct")
+                    self._streak += 1
+                else:
+                    print("❌ Wrong note, listen again!\n")
+                    self._streak = 0
+                print(f'Streak: {self._streak}')
                 
-            sleep (0.5)
+                sleep(0.5)
 def main():
         
 
